@@ -166,11 +166,7 @@
     //    ];
         $.extend(true, $.fn.dataTable.defaults, {
             "ordering": false,
-        });
-
-        $('#dataTables-example').on('click', 'tbody td', function () {
-            editor.inline(this);
-        });
+        }); 
 
         $(document).ready(function () {
 
@@ -188,11 +184,7 @@
                     name: "permissions"
                 },
                 ]
-            });
-
-            //$('#dataTables-example').on('click', 'tbody td:not(:first-child)', function (e) {
-            //    editor.inline(this);
-            //});
+            }); 
 
             $('#dataTables-example').DataTable({
                 dom: "Bfrtip",
