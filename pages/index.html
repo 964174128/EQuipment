@@ -171,30 +171,30 @@
         $(document).ready(function () {
 
             editor = new $.fn.dataTable.Editor({
-                data: dataSet,
+            	 ajax: "../../user/datagrid",
                 table: "#dataTables-example",
                 fields: [{
                     label: "编号:",
-                    name: "number"
+                    name: "id"
                 }, {
                     label: "姓名:",
-                    name: "name"
+                    name: "username"
                 }, {
                     label: "权限:",
-                    name: "permissions"
-                },
+                    name: "gender"
+                }
                 ]
             }); 
 
             $('#dataTables-example').DataTable({
                 dom: "Bfrtip",
-                ajax: "../php/staff.php",
+                ajax: "../../user/datagrid",
                 select: true,
                 //data: dataSet,
                 columns: [
-                    { data: "number",},
-                    { data: "name" },
-                    { data: "permissions" }, 
+                    { data: "id", title: "编号"},
+                    { data: "username",title: "姓名"  },
+                    { data: "gender", title: "权限" } 
                         ],
                 //columns: [
                 //    { title: "编号" },
