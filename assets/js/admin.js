@@ -1,3 +1,5 @@
+var ajaxUrl = "http://192.168.1.103:8080/crmnew/";
+
 $(function () {
     $('#side-menu').metisMenu();
 
@@ -36,9 +38,9 @@ $(function () {
     }
 });
 
-$(function () { 
+$(function () {
     var oTable02 = $('#dataTables-example').dataTable({
-        responsive: true,
+        responsive: true, 
         language: {
             "lengthMenu": "每页显示 _MENU_ 行",
             "zeroRecords": "对不起，没有找到匹配的内容！",
@@ -61,7 +63,74 @@ $(function () {
             },
         },
     });
+    GetData();
 
+    //获取数据
+    function GetData() { 
+        oTable02.fnClearTable();
+        $.ajax({
+            type: 'GET',
+            data:'',
+            dataType: "json",
+            url: ajaxUrl+"user/datagrid", 
+            success: function(data){
+                $.each(data.data, function (i, n) {
+                    var aiNew = oTable02.fnAddData([n.id, n.username, n.gender, '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
+                    var nRow = oTable02.fnGetNodes(aiNew[0]);
+                    $(nRow).find('td:last-child').addClass('actions text-center');
+                });
+            },
+            error: function (data) {
+                ShowError(data.error);
+            }
+        }); 
+    };
+
+    function ModifyData(oTable02, nRow) {
+        var aData = oTable02.fnGetData(nRow);
+        $.ajax({
+            type: 'GET',
+            data: { "id": aData[0], "username": aData[1], "gender": aData[2] },
+            dataType: "json",
+            url: "http://192.168.1.103:8080/crmnew/user/datagrid",
+            success: function (data) {
+                if (data.success) {
+                    saveRow(oTable02, nRow);
+                    return;
+                }
+                ShowError(data.msg); 
+            },
+            error: function (data) {
+                ShowError(data.msg);
+            }
+        });
+    }
+
+    function DeleteData(oTable02, nRow) {
+        var aData = oTable02.fnGetData(nRow);
+        $.ajax({
+            type: 'GET',
+            data: { "id": aData[0] },
+            dataType: "json",
+            url: "http://192.168.1.103:8080/crmnew/user/datagrid",
+            success: function (data) {
+                if (data.success) {
+                    saveRow(oTable02, nRow);
+                    return;
+                }
+                ShowError(data.msg);
+            },
+            error: function (data) {
+                ShowError(data.msg);
+            }
+        });
+    }
+
+    function ShowError(message) {
+        $("#dataTables-example_length").append("<div style='color:red'>"+message+"</div>");
+    }
+
+    //恢复表格
     function restoreRow(oTable02, nRow) {
         var aData = oTable02.fnGetData(nRow);
         var jqTds = $('>td', nRow);
@@ -72,36 +141,38 @@ $(function () {
         oTable02.fnDraw();
     };
 
+    //修改
     function editRow(oTable02, nRow) {
         var aData = oTable02.fnGetData(nRow);
         var jqTds = $('>td', nRow);
-        jqTds[0].innerHTML = '<input type="text" value="' + aData[0] + '">';
-        jqTds[1].innerHTML = '<input type="text" value="' + aData[1] + '">';
-        jqTds[2].innerHTML = '<input type="text" value="' + aData[2] + '">'; 
+        jqTds[0].innerHTML = '<input class="form-control" type="text" value="' + aData[0] + '">';
+        jqTds[1].innerHTML = '<input class="form-control" type="text" value="' + aData[1] + '">';
+        jqTds[2].innerHTML = '<input class="form-control" type="text" value="' + aData[2] + '">';
         jqTds[3].innerHTML = '<a class="edit save" href="#">保存 </a><a class="delete" href="#"> 删除</a>';
     };
 
+    //保存
     function saveRow(oTable02, nRow) {
         var jqInputs = $('input', nRow);
         oTable02.fnUpdate(jqInputs[0].value, nRow, 0, false);
         oTable02.fnUpdate(jqInputs[1].value, nRow, 1, false);
-        oTable02.fnUpdate(jqInputs[2].value, nRow, 2, false); 
+        oTable02.fnUpdate(jqInputs[2].value, nRow, 2, false);
         oTable02.fnUpdate('<a class="edit" href="#">修改 </a><a class="delete" href="#"> 删除</a>', nRow, 3, false);
         oTable02.fnDraw();
     };
 
 
-    // Append add row button to table
+    // 添加新增按钮
     var addRowLink = '<a href="#" id="addRow" class="btn btn btn-primary"  style="margin-right:20px;">新增</a>';
     $('#dataTables-example_filter').prepend(addRowLink);
 
     var nEditing = null;
 
-    // Add row initialize
+    // 新增行
     $('#addRow').click(function (e) {
         e.preventDefault();
 
-        // Only allow a new row when not currently editing
+        //如果正在编辑则不新增
         if (nEditing !== null) {
             return;
         }
@@ -113,33 +184,36 @@ $(function () {
 
         $(nRow).find('td:last-child').addClass('actions text-center');
     });
-     
+
     $(document).on("click", "#dataTables-example a.delete", function (e) {
         e.preventDefault();
 
         var nRow = $(this).parents('tr')[0];
         oTable02.fnDeleteRow(nRow);
+        nEditing = null;
     });
-     
+
     $(document).on("click", "#dataTables-example a.edit", function (e) {
-        e.preventDefault(); 
+        e.preventDefault();
         var nRow = $(this).parents('tr')[0];
 
-        if (nEditing !== null && nEditing != nRow) { 
+        if (nEditing !== null && nEditing != nRow) {
             restoreRow(oTable02, nEditing);
             editRow(oTable02, nRow);
             nEditing = nRow;
         }
-        else if (nEditing == nRow && this.innerHTML == "保存 ") { 
-            saveRow(oTable02, nEditing);
+        else if (nEditing == nRow && this.innerHTML == "保存 ") {
+            ModifyData(oTable02, nEditing);
             nEditing = null;
         }
-        else { 
+        else {
             editRow(oTable02, nRow);
             nEditing = nRow;
         }
     });
-})
+});
+
+
 
 
 
