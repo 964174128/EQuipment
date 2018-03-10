@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal 1.0 - DataTables</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+
+    <link rel="icon" type="image/ico" href="http://tattek.com/minimal/assets/images/favicon.ico" />
+    <!-- Bootstrap --> 
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />  
+    <link href="../assets/css/animate/animate.css" rel="stylesheet" /> 
+    <link href="../assets/mmenu/css/jquery.mmenu.all.css" rel="stylesheet" />  
+    <link href="../assets/bootstrap/css/bootstrap-checkbox.css" rel="stylesheet" />
+    <link href="../assets/chosen/css/chosen.min.css" rel="stylesheet" />  
+    <link href="../assets/chosen/css/chosen-bootstrap.css" rel="stylesheet" />
+    <link href="../assets/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <script src="../assets/datatables/colvis/dataTables.colVis.min.js"></script> 
+    <script src="../assets/datatables/tabletools/dataTables.tableTools.min.js"></script> 
+    <link href="../assets/datatables-responsive/dataTables.responsive.css" rel="stylesheet" />
+    <link href="../assets/css/minimal.css" rel="stylesheet" /> 
+</head>
+<body >    
+    <table class="table table-datatable table-custom" id="inlineEditDataTable">
+        <thead>
+            <tr>
+                <th class="sort-alpha">Rendering engine</th>
+                <th class="sort-alpha">Browser</th>
+                <th class="sort-amount">Platform(s)</th>
+                <th class="sort-numeric">Engine version</th>
+                <th>CSS grade</th>
+                <th class="no-sort">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="odd gradeX">
+                <td>Trident</td>
+                <td>Internet Explorer 4.0</td>
+                <td>Win 95+</td>
+                <td class="text-center"> 4</td>
+                <td class="text-center">X</td>
+                <td class="actions text-center"><a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a></td>
+            </tr>
+            <tr class="even gradeC">
+                <td>Trident</td>
+                <td>Internet Explorer 5.0</td>
+                <td>Win 95+</td>
+                <td class="text-center">5</td>
+                <td class="text-center">C</td>
+                <td class="actions text-center"><a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a></td>
+            </tr>
+            <tr class="odd gradeA">
+                <td>Trident</td>
+                <td>Internet Explorer 5.5</td>
+                <td>Win 95+</td>
+                <td class="text-center">5.5</td>
+                <td class="text-center">A</td>
+                <td class="actions text-center"><a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a></td>
+            </tr>
+            <tr class="even gradeA">
+                <td>Trident</td>
+                <td>Internet Explorer 6</td>
+                <td>Win 98+</td>
+                <td class="text-center">6</td>
+                <td class="text-center">A</td>
+                <td class="actions text-center"><a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a></td>
+            </tr>
+            <tr class="odd gradeA">
+                <td>Trident</td>
+                <td>Internet Explorer 7</td>
+                <td>Win XP SP2+</td>
+                <td class="text-center">7</td>
+                <td class="text-center">A</td>
+                <td class="actions text-center"><a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a></td>
+            </tr>
+        </tbody>
+    </table>
+     
+ 
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+    <script src="../assets/js/jquery-1.11.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>   
+    <script src="../assets/sparkline/jquery.sparkline.min.js"></script>
+    <script src="../assets/mmenu/js/jquery.mmenu.min.js"></script> 
+    <script src="../assets/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="../assets/animate-numbers/jquery.animateNumbers.js"></script>   
+    <script src="../assets/blockui/jquery.blockUI.js"></script>
+     
+    <script src="../assets/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/datatables/ColReorderWithResize.js"></script> 
+    <script src="../assets/datatables/colvis/dataTables.colVis.min.js"></script> 
+    <script src="../assets/datatables/tabletools/ZeroClipboard.js"></script> 
+    <script src="../assets/datatables/tabletools/dataTables.tableTools.min.js"></script> 
+    <script src="../assets/datatables/js/dataTables.bootstrap.min.js"></script>
+    <script src="../assets/chosen/chosen.jquery.min.js"></script> 
+    <script src="../assets/js/minimal.min.js"></script> 
+    <script src="../assets/datatables-responsive/dataTables.responsive.js"></script>
+    <script>
+        $(function () { 
+            var oTable02 = $('#inlineEditDataTable').dataTable({
+                responsive: true,
+                
+            });
+
+            function restoreRow(oTable02, nRow) {
+                var aData = oTable02.fnGetData(nRow);
+                var jqTds = $('>td', nRow);
+
+                for (var i = 0, iLen = jqTds.length ; i < iLen ; i++) {
+                    oTable02.fnUpdate(aData[i], nRow, i, false);
+                }
+
+                oTable02.fnDraw();
+            };
+
+            function editRow(oTable02, nRow) {
+                var aData = oTable02.fnGetData(nRow);
+                var jqTds = $('>td', nRow);
+                jqTds[0].innerHTML = '<input type="text" value="' + aData[0] + '">';
+                jqTds[1].innerHTML = '<input type="text" value="' + aData[1] + '">';
+                jqTds[2].innerHTML = '<input type="text" value="' + aData[2] + '">';
+                jqTds[3].innerHTML = '<input type="text" value="' + aData[3] + '">';
+                jqTds[4].innerHTML = '<input type="text" value="' + aData[4] + '">';
+                jqTds[5].innerHTML = '<a class="edit save" href="#">Save</a><a class="delete" href="#">Delete</a>';
+            };
+
+            function saveRow(oTable02, nRow) {
+                var jqInputs = $('input', nRow);
+                oTable02.fnUpdate(jqInputs[0].value, nRow, 0, false);
+                oTable02.fnUpdate(jqInputs[1].value, nRow, 1, false);
+                oTable02.fnUpdate(jqInputs[2].value, nRow, 2, false);
+                oTable02.fnUpdate(jqInputs[3].value, nRow, 3, false);
+                oTable02.fnUpdate(jqInputs[4].value, nRow, 4, false);
+                oTable02.fnUpdate('<a class="edit" href="#">Edit</a><a class="delete" href="#">Delete</a>', nRow, 5, false);
+                oTable02.fnDraw();
+            };
+
+             
+            // Append add row button to table
+            var addRowLink = '<a href="#" id="addRow" class="btn btn-green btn-xs add-row">Add row</a>'
+            $('#inlineEditDataTable_wrapper').append(addRowLink);
+
+            var nEditing = null;
+
+            // Add row initialize
+            $('#addRow').click(function (e) {
+                e.preventDefault();
+
+                // Only allow a new row when not currently editing
+                if (nEditing !== null) {
+                    return;
+                }
+
+                var aiNew = oTable02.fnAddData(['', '', '', '', '', '<a class="edit" href="">Edit</a>', '<a class="delete" href="">Delete</a>']);
+                var nRow = oTable02.fnGetNodes(aiNew[0]);
+                editRow(oTable02, nRow);
+                nEditing = nRow;
+
+                $(nRow).find('td:last-child').addClass('actions text-center');
+            });
+
+            // Delete row initialize
+            $(document).on("click", "#inlineEditDataTable a.delete", function (e) {
+                e.preventDefault();
+
+                var nRow = $(this).parents('tr')[0];
+                oTable02.fnDeleteRow(nRow);
+            });
+
+            // Edit row initialize
+            $(document).on("click", "#inlineEditDataTable a.edit", function (e) {
+                e.preventDefault();
+
+                /* Get the row as a parent of the link that was clicked on */
+                var nRow = $(this).parents('tr')[0];
+
+                if (nEditing !== null && nEditing != nRow) {
+                    /* A different row is being edited - the edit should be cancelled and this row edited */
+                    restoreRow(oTable02, nEditing);
+                    editRow(oTable02, nRow);
+                    nEditing = nRow;
+                }
+                else if (nEditing == nRow && this.innerHTML == "Save") {
+                    /* This row is being edited and should be saved */
+                    saveRow(oTable02, nEditing);
+                    nEditing = null;
+                }
+                else {
+                    /* No row currently being edited */
+                    editRow(oTable02, nRow);
+                    nEditing = nRow;
+                }
+            });
+
+             
+
+        })
+
+    </script>
+</body>
+</html>
