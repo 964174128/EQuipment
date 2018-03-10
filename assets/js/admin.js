@@ -117,19 +117,20 @@ $(function () {
     function DeleteData(oTable02, nRow) {
         var aData = oTable02.fnGetData(nRow);
         $.ajax({
-            type: 'GET',
-            data: { "id": aData[0] },
+            type: 'POST',
+            data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: "http://192.168.1.103:8080/crmnew/user/datagrid",
+            url: ajaxUrl + "user/deleteUser",
             success: function (data) {
-                if (data.success) {
-                    saveRow(oTable02, nRow);
+                if (data.success) { 
+                    oTable02.fnDeleteRow(nRow);
+                    nEditing = null;
                     return;
                 }
                 ShowError(data.msg);
             },
             error: function (data) {
-                ShowError("删除失败");
+                ShowError("删除失败!请检查网络连接！");
             }
         }); 
     }
@@ -200,10 +201,8 @@ $(function () {
 
     $(document).on("click", "#dataTables-example a.delete", function (e) {
         e.preventDefault();
-
         var nRow = $(this).parents('tr')[0];
-        oTable02.fnDeleteRow(nRow);
-        nEditing = null;
+        DeleteData(oTable02, nRow); 
     });
 
     $(document).on("click", "#dataTables-example a.edit", function (e) {
