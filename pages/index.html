@@ -12,10 +12,7 @@
     <!-- Bootstrap Core CSS --> 
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet" />
-    <link href="../assets/datatables-responsive/dataTables.responsive.css" rel="stylesheet" />
-    <link href="../assets/datatables/css/buttons.dataTables.min.css" rel="stylesheet" />
-    <link href="../assets/datatables/css/select.dataTables.min.css" rel="stylesheet" />  
-    <link href="../assets/datatables-editor/css/dataTables.editor.css" rel="stylesheet" />
+    <link href="../assets/datatables-responsive/dataTables.responsive.css" rel="stylesheet" /> 
     <!-- MetisMenu CSS --> 
     <link href="../assets/metisMenu/metisMenu.min.css" rel="stylesheet" />
     <!-- Custom CSS --> 
@@ -107,26 +104,28 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body"> 
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <!--<thead>
+                                <thead>
                                     <tr> 
                                         <th>编号</th>
                                         <th>姓名</th>
                                         <th>权限</th>
-                                        
+                                        <th class="no-sort">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="odd gradeX"> 
                                         <td>00001</td>
                                         <td>张三</td>
-                                        <td>管理员</td>
+                                        <td>管理员</td> 
+                                        <td class="actions text-center"><a class="edit" href="#">修改 </a><a class="delete" href="#"> 删除</a></td>
                                     </tr>
                                     <tr class="even gradeC">
                                         <td>00002</td>
                                         <td>李四</td>
                                         <td>操作员</td>
+                                        <td class="actions text-center"><a class="edit" href="#">修改 </a><a class="delete" href="#"> 删除</a></td>
                                     </tr> 
-                                </tbody>-->
+                                </tbody>
                             </table> 
                         </div>
                         <!-- /.panel-body -->
@@ -148,49 +147,45 @@
     <script src="../assets/datatables/js/jquery.dataTables.min.js"></script>
 
     <script src="../assets/datatables/js/dataTables.bootstrap.min.js"></script>
-    <script src="../assets/datatables-responsive/dataTables.responsive.js"></script>
-    <script src="../assets/datatables/js/dataTables.buttons.min.js"></script>
-    <script src="../assets/datatables/js/dataTables.buttons.js"></script>
-    <script src="../assets/datatables/js/dataTables.select.min.js"></script>  
-    <script src="../assets/datatables-editor/js/dataTables.editor.js"></script> 
+    <script src="../assets/datatables-responsive/dataTables.responsive.js"></script> 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="../assets/metisMenu/metisMenu.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="../assets/js/admin.js"></script>
-    <script type="text/javascript" class="init">
-        var editor;
-    //    var dataSet = [
-    //["0003", "王二", "操作员"],
-    //["0004", "麻子", "操作员"],
-    //    ];
+    <!--<script type="text/javascript" class="init">
+        //var editor;
+        var dataSet = [
+    ["0003", "王二", "操作员"],
+    ["0004", "麻子", "操作员"],
+        ];
         $.extend(true, $.fn.dataTable.defaults, {
             "ordering": false,
         }); 
 
         $(document).ready(function () {
 
-            editor = new $.fn.dataTable.Editor({
-            	 ajax: "../../user/datagrid",
-                table: "#dataTables-example",
-                fields: [{
-                    label: "编号:",
-                    name: "id"
-                }, {
-                    label: "姓名:",
-                    name: "username"
-                }, {
-                    label: "权限:",
-                    name: "gender"
-                }
-                ]
-            }); 
+            //editor = new $.fn.dataTable.Editor({
+            //	 ajax: "../../user/datagrid",
+            //    table: "#dataTables-example",
+            //    fields: [{
+            //        label: "编号:",
+            //        name: "id"
+            //    }, {
+            //        label: "姓名:",
+            //        name: "username"
+            //    }, {
+            //        label: "权限:",
+            //        name: "gender"
+            //    }
+            //    ]
+            //}); 
 
             $('#dataTables-example').DataTable({
                 dom: "Bfrtip",
-                ajax: "../../user/datagrid",
+                //ajax: "../../user/datagrid",
                 select: true,
-                //data: dataSet,
+                data: dataSet,
                 columns: [
                     { data: "id", title: "编号"},
                     { data: "username",title: "姓名"  },
@@ -223,15 +218,10 @@
                         "sortDescending": ": 降序"
                     },
                 },
-                "lengthChange": false,
-                buttons: [
-                    { extend: "create", editor: editor,text:"新增" },
-                    { extend: "edit", editor: editor, text: "修改" },
-                    { extend: "remove", editor: editor, text: "删除" }
-                ]
+                "lengthChange": false, 
             });
         });
-    </script>
+    </script>-->
 
 </body>
 
