@@ -169,7 +169,7 @@ function GetCabinets() {
 }
 
 //保存
-function InsertEquipment() {
+function InsertEquipment()   {
     var urlTemp = ""; 
     if (id==undefined||id==null) {
         urlTemp=ajaxUrl + "Equipments/add";
@@ -188,9 +188,11 @@ function InsertEquipment() {
         url: urlTemp,
         success: function (data) {
             if (data.success == true || data.success=="true") {
-                alert("保存成功！");
-
-                $("#mainForm").reset();
+                $(':input', '#mainForm')
+       .not(':button,:submit,:reset,:hidden')
+       .val('')
+       .removeAttr('checked');
+                alert("保存成功！"); 
                 return;
             }
             alert(data.msg);
@@ -202,15 +204,17 @@ function InsertEquipment() {
 }
 
 //获取设备信息
-function GetEquipmentInfo() {
+function GetEquipmentInfo() { 
     $.ajax({
         type: 'POST',
         data: {
             "id": id},
         dataType: "json",
-        url: ajaxUrl + "Cabinets/datagrid",
-        success: function (data) { 
+        url: ajaxUrl + "Equipments/getequipmentsbyid",
+        success: function (data) {
+            data = data.data; 
             $("#id").val(id);
+            $("#id").attr("readonly","readonly");
             $("#name").val(data.name);
             $("#model").val(data.model);
             $("#portId").val(data.portId);
@@ -233,4 +237,11 @@ $('#engineRoom').on('changed.bs.select', function (e) {
 
 $("#saveBtn").click(function (e) {
     InsertEquipment();
+});
+
+$("#deleteBtn").click(function (e) { 
+    $(':input', '#mainForm')
+       .not(':button,:submit,:reset,:hidden')
+       .val('')
+       .removeAttr('checked');
 });
