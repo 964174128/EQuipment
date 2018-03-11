@@ -5,10 +5,13 @@ function GetQueryString(name) {
     if (r != null) return unescape(r[2]); return null;
 }
  
+var id = GetQueryString("id");
+
 $(function () {
-    var id = GetQueryString("id");
+   
     var engineRooms = [];
     var cabinets = [];
+    
     $('.selectpicker').selectpicker.defaults = {
         noneSelectedText: '没有选中任何项',
         noneResultsText: '没有找到匹配项',
@@ -42,7 +45,7 @@ $(function () {
             portId: { 
                 validators: {
                     notEmpty: {
-                        message: '用户名必填不能为空'
+                        message: '端口编号必填不能为空'
                     },
                     digits: {
                         message: '端口编号只能由数字组成。'
@@ -57,6 +60,31 @@ $(function () {
                     },
                 }
             },
+            //model: {
+            //    message: '设备型号不能为空',//默认提示信息
+            //    validators: {
+            //        notEmpty: {
+            //            message: '设备型号必填不能为空'
+            //        },
+            //    }
+            //},
+            //portConnect: {
+            //    message: '端口连接不能为空',//默认提示信息
+            //    validators: {
+            //        notEmpty: {
+            //            message: '端口连接必填不能为空'
+            //        },
+            //    },
+
+            //},
+            //portType: {
+            //    message: '端口类型不能为空',//默认提示信息
+            //    validators: {
+            //        notEmpty: {
+            //            message: '端口类型必填不能为空'
+            //        },
+            //    }
+            //},
             portName: {
                 message: '端口名称不能为空',//默认提示信息
                 validators: {
@@ -91,32 +119,118 @@ $(function () {
 
         $collapse.collapse('show');
     });
-   
-});
 
-function InsertEquipment() {
+    GetEngineRooms(); 
+});
+ 
+//获取机房列表
+function GetEngineRooms() {
+    $("#engineRoom").html("");
     $.ajax({
         type: 'POST',
-        data: {
-            "id": parseInt($("#id").val()), "name": $("#name").val(), "model": $("#model").val(), "portId": parseInt($("#portId").val()), "portName": $("#portName").val(),
-            "portType": $("#portType").val(), "portConnect": $("#portConnect").val(), "engineRoomId": $("button[data-id='engineRoom']").attr("title"),
-            "cabinetId": $("button[data-id='cabinetId']").attr("title")
-        },
+        data: "",
         dataType: "json",
-        url: ajaxUrl + "Equipments/datagrid",
+        url: ajaxUrl + "EngineRooms/datagrid",
         success: function (data) {
+            var htmlStr = "";
             $.each(data.data, function (i, n) {
-                var aiNew = oTable02.fnAddData([n.id, n.name, n.model, n.portId, n.portType, n.portConnect, n.engineRoom, n.cabinet,
-                    '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
-                var nRow = oTable02.fnGetNodes(aiNew[0]);
-                $(nRow).find('td:last-child').addClass('actions text-center');
+                var option = '<option title="' + n.id + '">' + n.name + '</option>'; 
+                htmlStr += option; 
             });
-        },
-        error: function (data) {
-            ShowError(data.error);
+            $("#engineRoom").html(htmlStr); 
+            $("#engineRoom").selectpicker("refresh");
+            GetCabinets();
+        } 
+    });
+}
+
+//获取机柜列表
+function GetCabinets() { 
+    $("#cabinet").html("");
+    $.ajax({
+        type: 'POST',
+        data: { "id": parseInt($("button[data-id='engineRoom']").attr("title")), },
+        dataType: "json",
+        url: ajaxUrl + "Cabinets/datagrid",
+        success: function (data) { 
+            var htmlStr = "";
+            $.each(data.data, function (i, n) { 
+                var option = '<option title="' + n.id + '">' + n.name + '</option>'; 
+                htmlStr+=option;
+            });
+            $("#cabinet").html(htmlStr);
+            $("#cabinet").selectpicker("refresh");
+
+            if (id != undefined) {
+                GetEquipmentInfo();
+            }
         }
     });
 }
 
-$("#saveBtn").click(function(){ 
+//保存
+function InsertEquipment() {
+    var urlTemp = ""; 
+    if (id==undefined||id==null) {
+        urlTemp=ajaxUrl + "Equipments/add";
+    }else{
+        urlTemp = ajaxUrl + "Equipments/edit"
+    }
+    $("#errMsg").html("");
+    $.ajax({
+        type: 'POST',
+        data: {
+            "id": parseInt($("#id").val()), "name": $("#name").val(), "model": $("#model").val(), "portId": parseInt($("#portId").val()), "portName": $("#portName").val(),
+            "portType": $("#portType").val(), "portConnect": $("#portConnect").val(), "engineRoomId": parseInt($("button[data-id='engineRoom']").attr("title")), 
+            "cabinetId": parseInt($("button[data-id='cabinet']").attr("title")),
+        },
+        dataType: "json",
+        url: urlTemp,
+        success: function (data) {
+            if (data.success == true || data.success=="true") {
+                alert("保存成功！");
+
+                $("#mainForm").reset();
+                return;
+            }
+            alert(data.msg);
+        },
+        error:function(data){
+            alert(data.success);
+        }
+    });
+}
+
+//获取设备信息
+function GetEquipmentInfo() {
+    $.ajax({
+        type: 'POST',
+        data: {
+            "id": id},
+        dataType: "json",
+        url: ajaxUrl + "Cabinets/datagrid",
+        success: function (data) { 
+            $("#id").val(id);
+            $("#name").val(data.name);
+            $("#model").val(data.model);
+            $("#portId").val(data.portId);
+            $("#portName").val(data.portName); 
+            $("#portType").val(data.portType);
+            $("#portConnect").val(data.portConnect);
+            $("#engineRoom option[title='"+data.engineRoomId+"']").attr("selected",true);
+            $("#cabinetId option[title='"+data.cabinetId+"']").attr("selected",true); 
+        },
+        error: function (data) {
+            alert("获取设备信息失败，请检查网络连接！");
+        }
+    });
+}
+    
+//选择机房时，切换机柜
+$('#engineRoom').on('changed.bs.select', function (e) {
+    GetCabinets(); 
+});
+
+$("#saveBtn").click(function (e) {
+    InsertEquipment();
 });
