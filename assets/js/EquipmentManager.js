@@ -30,7 +30,7 @@
             type: 'POST',
             data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: ajaxUrl + "user/deleteUser",
+            url: ajaxUrl + "Equipments/delete",
             success: function (data) {
                 if (data.success) {
                     oTable02.fnDeleteRow(nRow); 
