@@ -12,7 +12,7 @@
             url: ajaxUrl + "Equipments/datagrid",
             success: function (data) {
                 $.each(data.data, function (i, n) {
-                    var aiNew = oTable02.fnAddData([n.id, n.name, n.model, n.portId, n.portType, n.portConnect, n.engineRoom, n.cabinet,
+                    var aiNew = oTable02.fnAddData([n.id, n.name, n.model, n.portId,n.portName, n.portType, n.portConnect, n.engineRoom, n.cabinet,
                         '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
                     var nRow = oTable02.fnGetNodes(aiNew[0]);
                     $(nRow).find('td:last-child').addClass('actions text-center');

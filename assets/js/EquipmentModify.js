@@ -7,7 +7,8 @@ function GetQueryString(name) {
  
 $(function () {
     var id = GetQueryString("id");
-     
+    var engineRooms = [];
+    var cabinets = [];
     $('.selectpicker').selectpicker.defaults = {
         noneSelectedText: '没有选中任何项',
         noneResultsText: '没有找到匹配项',
@@ -56,6 +57,14 @@ $(function () {
                     },
                 }
             },
+            portName: {
+                message: '端口名称不能为空',//默认提示信息
+                validators: {
+                    notEmpty: {
+                        message: '端口名称必填不能为空'
+                    },
+                }
+            },
             engineRoom: {
                 message: '所属机房不能为空',//默认提示信息
                 validators: {
@@ -71,9 +80,7 @@ $(function () {
                         message: '所属机柜必填不能为空'
                     },
                 }
-            },
-
-
+            }, 
         }
     }).on('error.form.bv', function (e) {
 
@@ -84,4 +91,32 @@ $(function () {
 
         $collapse.collapse('show');
     });
+   
+});
+
+function InsertEquipment() {
+    $.ajax({
+        type: 'POST',
+        data: {
+            "id": parseInt($("#id").val()), "name": $("#name").val(), "model": $("#model").val(), "portId": parseInt($("#portId").val()), "portName": $("#portName").val(),
+            "portType": $("#portType").val(), "portConnect": $("#portConnect").val(), "engineRoomId": $("button[data-id='engineRoom']").attr("title"),
+            "cabinetId": $("button[data-id='cabinetId']").attr("title")
+        },
+        dataType: "json",
+        url: ajaxUrl + "Equipments/datagrid",
+        success: function (data) {
+            $.each(data.data, function (i, n) {
+                var aiNew = oTable02.fnAddData([n.id, n.name, n.model, n.portId, n.portType, n.portConnect, n.engineRoom, n.cabinet,
+                    '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
+                var nRow = oTable02.fnGetNodes(aiNew[0]);
+                $(nRow).find('td:last-child').addClass('actions text-center');
+            });
+        },
+        error: function (data) {
+            ShowError(data.error);
+        }
+    });
+}
+
+$("#saveBtn").click(function(){ 
 });
