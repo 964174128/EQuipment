@@ -7,8 +7,7 @@ function GetQueryString(name) {
 
 var id = GetQueryString("id");
 
-$(function () {
-     
+$(function () { 
     $('.selectpicker').selectpicker.defaults = {
         noneSelectedText: '没有选中任何项',
         noneResultsText: '没有找到匹配项',
@@ -32,38 +31,38 @@ $(function () {
             id: {
                 validators: {
                     notEmpty: {
-                        message: '机房编号必填不能为空'
+                        message: '机柜编号必填不能为空'
                     },
                     digits: {
-                        message: '机房编号只能由数字组成。'
-                    },
-                }
-            }, 
-            name: { 
-                validators: {
-                    notEmpty: {
-                        message: '机房名称必填不能为空'
-                    },
-                }
-            }, 
-            portName: { 
-                validators: {
-                    notEmpty: {
-                        message: '端口名称必填不能为空'
+                        message: '机柜编号只能由数字组成。'
                     },
                 }
             },
-            building: { 
+            name: {
+                validators: {
+                    notEmpty: {
+                        message: '机柜名称必填不能为空'
+                    },
+                }
+            }, 
+            building: {
                 validators: {
                     notEmpty: {
                         message: '所属建筑必填不能为空'
                     },
                 }
             },
-            floor: { 
+            floor: {
                 validators: {
                     notEmpty: {
                         message: '所属楼层必填不能为空'
+                    },
+                }
+            },
+            engineRoom: {
+                validators: {
+                    notEmpty: {
+                        message: '所属机房必填不能为空'
                     },
                 }
             },
@@ -98,7 +97,7 @@ function GetBuildings() {
             $("#building").html(htmlStr);
             $("#building").selectpicker("refresh");
             if (id != undefined) {
-                GetEngineRoomInfo();
+                GetCabinetInfo();
                 return;
             }
             GetFloors();
@@ -108,7 +107,7 @@ function GetBuildings() {
 
 //获取楼层列表
 function GetFloors(floorId) {
-    $("#cabinet").html("");
+    $("#floor").html("");
     $.ajax({
         type: 'POST',
         data: { "id": parseInt($("button[data-id='building']").attr("title")), },
@@ -122,16 +121,43 @@ function GetFloors(floorId) {
             });
             $("#floor").html(htmlStr);
 
-            if (cabinetId != undefined && cabinetId != null) {
-                $("#floor option[title='" + data.cabinetId + "']").attr("selected", "selected");
+            if (floorId != undefined && floorId != null) {
+                $("#floor option[title='" + data.floorId + "']").attr("selected", "selected");
+                $("#floor").selectpicker("refresh");
+                GetEngineRooms(engineId);
+                return;
             }
             $("#floor").selectpicker("refresh");
         }
     });
 }
 
+//获取机房列表
+function GetEngineRooms(engineId) {
+    $("#engineRoom").html("");
+    $.ajax({
+        type: 'POST',
+        data: { "id": parseInt($("button[data-id='floor']").attr("title")), },
+        dataType: "json",
+        url: ajaxUrl + "Cabinets/datagrid",
+        success: function (data) {
+            var htmlStr = "";
+            $.each(data.data, function (i, n) {
+                var option = '<option title="' + n.id + '">' + n.name + '</option>';
+                htmlStr += option;
+            });
+            $("#engineRoom").html(htmlStr);
+
+            if (engineId != undefined && engineId != null) {
+                $("#engineRoom option[title='" + data.engineRoomId + "']").attr("selected", "selected");
+            }
+            $("#engineRoom").selectpicker("refresh");
+        }
+    });
+}
+
 //保存
-function InsertEngineRoom() {
+function InsertCabinet() {
     var urlTemp = "";
     if (id == undefined || id == null) {
         urlTemp = ajaxUrl + "Equipments/add";
@@ -142,7 +168,7 @@ function InsertEngineRoom() {
     $.ajax({
         type: 'POST',
         data: {
-            "id": parseInt($("#id").val()), "name": $("#name").val(), "floorId": parseInt($("button[data-id='floor']").attr("title")),
+            "id": parseInt($("#id").val()), "name": $("#name").val(), "engineRoomId": parseInt($("button[data-id='engineRoom']").attr("title")),
         },
         dataType: "json",
         url: urlTemp,
@@ -163,8 +189,8 @@ function InsertEngineRoom() {
     });
 }
 
-//获取机房信息
-function GetEngineRoomInfo() {
+//获取机柜信息
+function GetCabinetInfo() {
     $.ajax({
         type: 'POST',
         data: {
@@ -176,24 +202,29 @@ function GetEngineRoomInfo() {
             data = data.data;
             $("#id").val(id);
             $("#id").attr("readonly", "readonly");
-            $("#name").val(data.name); 
+            $("#name").val(data.name);
             $("#building option[title='" + data.buidingId + "']").attr("selected", "selected");
             $("#building").selectpicker("refresh");
             GetFloors(data.floorId);
         },
         error: function (data) {
-            alert("获取设备信息失败，请检查网络连接！");
+            alert("获取机柜信息失败，请检查网络连接！");
         }
     });
 }
 
-//选择机房时，切换机柜
-$('#engineRoom').on('changed.bs.select', function (e) {
+//选择建筑时，切换楼层
+$('#building').on('changed.bs.select', function (e) {
     GetFloors();
 });
 
+//选择楼层时，切换机房
+$('#floor').on('changed.bs.select', function (e) {
+    GetEngineRooms();
+});
+
 $("#saveBtn").click(function (e) {
-    InsertEngineRoom();
+    InsertCabinet();
 });
 
 $("#deleteBtn").click(function (e) {
