@@ -4,10 +4,11 @@ function GetQueryString(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
 }
- 
+
 var id = GetQueryString("id");
 
-$(function () { 
+$(function () {
+     
     $('.selectpicker').selectpicker.defaults = {
         noneSelectedText: '没有选中任何项',
         noneResultsText: '没有找到匹配项',
@@ -28,17 +29,17 @@ $(function () {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-            id: { 
+            id: {
                 validators: {
                     notEmpty: {
-                        message: '设备编号必填不能为空'
+                        message: '配线架编号必填不能为空'
                     },
                     digits: {
-                        message: '设备编号只能由数字组成。'
+                        message: '配线架编号只能由数字组成。'
                     },
                 }
             },
-            portId: { 
+            portId: {
                 validators: {
                     notEmpty: {
                         message: '端口编号必填不能为空'
@@ -79,7 +80,7 @@ $(function () {
                         message: '所属机柜必填不能为空'
                     },
                 }
-            }, 
+            },
         }
     }).on('error.form.bv', function (e) {
 
@@ -91,9 +92,9 @@ $(function () {
         $collapse.collapse('show');
     });
 
-    GetEngineRooms(); 
+    GetEngineRooms();
 });
- 
+
 //获取机房列表
 function GetEngineRooms() {
     $("#engineRoom").html("");
@@ -105,38 +106,38 @@ function GetEngineRooms() {
         success: function (data) {
             var htmlStr = "";
             $.each(data.data, function (i, n) {
-                var option = '<option title="' + n.id + '">' + n.name + '</option>'; 
-                htmlStr += option; 
+                var option = '<option title="' + n.id + '">' + n.name + '</option>';
+                htmlStr += option;
             });
-            $("#engineRoom").html(htmlStr); 
+            $("#engineRoom").html(htmlStr);
             $("#engineRoom").selectpicker("refresh");
             if (id != undefined) {
-                GetEquipmentInfo();
+                GetPatchPanelInfo();
                 return;
             }
             GetCabinets();
-        } 
+        }
     });
 }
 
 //获取机柜列表
-function GetCabinets(cabinetId) { 
-    $("#cabinet").html(""); 
+function GetCabinets(cabinetId) {
+    $("#cabinet").html("");
     $.ajax({
         type: 'POST',
         data: { "id": parseInt($("button[data-id='engineRoom']").attr("title")), },
         dataType: "json",
         url: ajaxUrl + "Cabinets/datagrid",
-        success: function (data) { 
+        success: function (data) {
             var htmlStr = "";
-            $.each(data.data, function (i, n) { 
-                var option = '<option title="' + n.id + '">' + n.name + '</option>'; 
-                htmlStr+=option;
+            $.each(data.data, function (i, n) {
+                var option = '<option title="' + n.id + '">' + n.name + '</option>';
+                htmlStr += option;
             });
             $("#cabinet").html(htmlStr);
-            
-            if (cabinetId != undefined && cabinetId != null) { 
-                $("#cabinet option[title='" + data.cabinetId + "']").attr("selected", "selected"); 
+
+            if (cabinetId != undefined && cabinetId != null) {
+                $("#cabinet option[title='" + data.cabinetId + "']").attr("selected", "selected");
             }
             $("#cabinet").selectpicker("refresh");
         }
@@ -144,78 +145,78 @@ function GetCabinets(cabinetId) {
 }
 
 //保存
-function InsertEquipment()   {
-    var urlTemp = ""; 
-    if (id==undefined||id==null) {
-        urlTemp=ajaxUrl + "Equipments/add";
-    }else{
+function InsertPatchPanel() {
+    var urlTemp = "";
+    if (id == undefined || id == null) {
+        urlTemp = ajaxUrl + "Equipments/add";
+    } else {
         urlTemp = ajaxUrl + "Equipments/edit"
     }
     $("#errMsg").html("");
     $.ajax({
         type: 'POST',
         data: {
-            "id": parseInt($("#id").val()), "name": $("#name").val(), "model": $("#model").val(), "portId": parseInt($("#portId").val()), "portName": $("#portName").val(),
-            "portType": $("#portType").val(), "portConnect": $("#portConnect").val(), "engineRoomId": parseInt($("button[data-id='engineRoom']").attr("title")), 
+            "id": parseInt($("#id").val()), "name": $("#name").val(), "portId": parseInt($("#portId").val()), "portName": $("#portName").val(),
+            "portType": $("#portType").val(), "portConnect": $("#portConnect").val(), "engineRoomId": parseInt($("button[data-id='engineRoom']").attr("title")),
             "cabinetId": parseInt($("button[data-id='cabinet']").attr("title")),
         },
         dataType: "json",
         url: urlTemp,
         success: function (data) {
-            if (data.success == true || data.success=="true") {
+            if (data.success == true || data.success == "true") {
                 $(':input', '#mainForm')
        .not(':button,:submit,:reset,:hidden')
        .val('')
        .removeAttr('checked');
-                alert("保存成功！"); 
+                alert("保存成功！");
                 return;
             }
             alert(data.msg);
         },
-        error:function(data){
+        error: function (data) {
             alert(data.success);
         }
     });
 }
 
-//获取设备信息
-function GetEquipmentInfo() { 
+//获取配线架信息
+function GetPatchPanelInfo() {
     $.ajax({
         type: 'POST',
         data: {
-            "id": id},
+            "id": id
+        },
         dataType: "json",
         url: ajaxUrl + "Equipments/getequipmentsbyid",
         success: function (data) {
-            data = data.data; 
+            data = data.data;
             $("#id").val(id);
-            $("#id").attr("readonly","readonly");
-            $("#name").val(data.name);
-            $("#model").val(data.model);
+            $("#id").attr("readonly", "readonly");
+            $("#name").val(data.name); 
             $("#portId").val(data.portId);
-            $("#portName").val(data.portName); 
+            $("#portName").val(data.portName);
             $("#portType").val(data.portType);
             $("#portConnect").val(data.portConnect);
             $("#engineRoom option[title='" + data.engineRoomId + "']").attr("selected", "selected");
             $("#engineRoom").selectpicker("refresh");
-            GetCabinets(data.cabinetId); 
+            GetCabinets(data.cabinetId);
         },
         error: function (data) {
             alert("获取设备信息失败，请检查网络连接！");
         }
     });
 }
-    
+
 //选择机房时，切换机柜
 $('#engineRoom').on('changed.bs.select', function (e) {
-    GetCabinets(); 
+    GetCabinets();
 });
 
 $("#saveBtn").click(function (e) {
-    InsertEquipment();
+    InsertPatchPanel();
 });
 
-$("#deleteBtn").click(function (e) { 
+$("#deleteBtn").click(function (e) {
     $(':input', '#mainForm')
        .not(':button,:submit,:reset,:hidden')
        .val('')
