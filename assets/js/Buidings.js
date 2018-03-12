@@ -12,7 +12,7 @@
             url: ajaxUrl + "user/datagrid",
             success: function (data) {
                 $.each(data.data, function (i, n) {
-                    var aiNew = oTable02.fnAddData([n.id, n.username, n.gender, '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
+                    var aiNew = oTable02.fnAddData([n.id, n.name, '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
                     var nRow = oTable02.fnGetNodes(aiNew[0]);
                     $(nRow).find('td:last-child').addClass('actions text-center');
                 });
