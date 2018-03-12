@@ -134,15 +134,14 @@ function GetFloorInfo() {
             "id": id
         },
         dataType: "json",
-        url: ajaxUrl + "Equipments/getequipmentsbyid",
+        url: ajaxUrl + "Floors/getfloorbyid",
         success: function (data) {
             data = data.data;
             $("#id").val(id);
             $("#id").attr("readonly", "readonly");
             $("#name").val(data.name); 
-            $("#building option[title='" + data.engineRoomId + "']").attr("selected", "selected");
-            $("#building").selectpicker("refresh");
-            GetCabinets(data.cabinetId);
+            $("#building option[title='" + data.buildingId + "']").attr("selected", "selected");
+            $("#building").selectpicker("refresh"); 
         },
         error: function (data) {
             alert("获取楼层信息失败，请检查网络连接！");

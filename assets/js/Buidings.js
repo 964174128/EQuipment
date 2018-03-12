@@ -17,8 +17,7 @@
                     $(nRow).find('td:last-child').addClass('actions text-center');
                 });
             },
-            error: function (data) {
-                alert("shib");
+            error: function (data) { 
                 ShowError(data.error);
             }
         });
