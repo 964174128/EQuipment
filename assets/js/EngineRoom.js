@@ -9,10 +9,10 @@
             type: 'POST',
             data: '',
             dataType: "json",
-            url: ajaxUrl + "Floors/datagrid",
+            url: ajaxUrl + "Equipments/datagrid",
             success: function (data) {
                 $.each(data.data, function (i, n) {
-                    var aiNew = oTable02.fnAddData([n.id, n.name, n.buildingId, n.buildingName,
+                    var aiNew = oTable02.fnAddData([n.id, n.name, n.buildingName, n.floorName,
                         '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
                     var nRow = oTable02.fnGetNodes(aiNew[0]);
                     $(nRow).find('td:last-child').addClass('actions text-center');
@@ -30,7 +30,7 @@
             type: 'POST',
             data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: ajaxUrl + "Floors/delete",
+            url: ajaxUrl + "Equipments/delete",
             success: function (data) {
                 if (data.success) {
                     oTable02.fnDeleteRow(nRow);
@@ -50,7 +50,7 @@
 
     // 新增
     $('#addRow').click(function (e) {
-        window.location.href = "../pages/FloorModify.html";
+        window.location.href = "../pages/EngineRoomModify.html";
     });
 
     //删除
@@ -64,7 +64,7 @@
         e.preventDefault();
         var nRow = $(this).parents('tr')[0];
         var aData = oTable02.fnGetData(nRow);
-        window.location.href = "../pages/FloorModify.html?id=" + aData[0];
+        window.location.href = "../pages/EngineRoomModify.html?id=" + aData[0];
     });
 
 });
