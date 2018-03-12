@@ -8,10 +8,7 @@ function GetQueryString(name) {
 var id = GetQueryString("id");
 
 $(function () {
-
-    var engineRooms = [];
-    var cabinets = [];
-
+     
     $('.selectpicker').selectpicker.defaults = {
         noneSelectedText: '没有选中任何项',
         noneResultsText: '没有找到匹配项',

@@ -101,7 +101,7 @@ function GetBuildings() {
             $("#building").html(htmlStr);
             $("#building").selectpicker("refresh");
             if (id != undefined) {
-                GetEquipmentInfo();
+                GetEngineRoomInfo();
                 return;
             }
             GetCabinets();
@@ -110,11 +110,11 @@ function GetBuildings() {
 }
 
 //获取楼层列表
-function GetFloors(cabinetId) {
+function GetFloors(floorId) {
     $("#cabinet").html("");
     $.ajax({
         type: 'POST',
-        data: { "id": parseInt($("button[data-id='engineRoom']").attr("title")), },
+        data: { "id": parseInt($("button[data-id='building']").attr("title")), },
         dataType: "json",
         url: ajaxUrl + "Cabinets/datagrid",
         success: function (data) {
@@ -134,7 +134,7 @@ function GetFloors(cabinetId) {
 }
 
 //保存
-function InsertEquipment() {
+function InsertEngineRoom() {
     var urlTemp = "";
     if (id == undefined || id == null) {
         urlTemp = ajaxUrl + "Equipments/add";
@@ -145,8 +145,7 @@ function InsertEquipment() {
     $.ajax({
         type: 'POST',
         data: {
-            "id": parseInt($("#id").val()), "name": $("#name").val(), "engineRoomId": parseInt($("button[data-id='engineRoom']").attr("title")),
-            "floor": parseInt($("button[data-id='floor']").attr("title")),
+            "id": parseInt($("#id").val()), "name": $("#name").val(), "floorId": parseInt($("button[data-id='floor']").attr("title")),
         },
         dataType: "json",
         url: urlTemp,
@@ -167,8 +166,8 @@ function InsertEquipment() {
     });
 }
 
-//获取设备信息
-function GetEquipmentInfo() {
+//获取机房信息
+function GetEngineRoomInfo() {
     $.ajax({
         type: 'POST',
         data: {
@@ -180,15 +179,10 @@ function GetEquipmentInfo() {
             data = data.data;
             $("#id").val(id);
             $("#id").attr("readonly", "readonly");
-            $("#name").val(data.name);
-            $("#model").val(data.model);
-            $("#portId").val(data.portId);
-            $("#portName").val(data.portName);
-            $("#portType").val(data.portType);
-            $("#portConnect").val(data.portConnect);
-            $("#engineRoom option[title='" + data.engineRoomId + "']").attr("selected", "selected");
-            $("#engineRoom").selectpicker("refresh");
-            GetCabinets(data.cabinetId);
+            $("#name").val(data.name); 
+            $("#building option[title='" + data.buidingId + "']").attr("selected", "selected");
+            $("#building").selectpicker("refresh");
+            GetFloors(data.floorId);
         },
         error: function (data) {
             alert("获取设备信息失败，请检查网络连接！");
@@ -198,11 +192,11 @@ function GetEquipmentInfo() {
 
 //选择机房时，切换机柜
 $('#engineRoom').on('changed.bs.select', function (e) {
-    GetCabinets();
+    GetFloors();
 });
 
 $("#saveBtn").click(function (e) {
-    InsertEquipment();
+    InsertEngineRoom();
 });
 
 $("#deleteBtn").click(function (e) {
