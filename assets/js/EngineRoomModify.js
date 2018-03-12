@@ -113,7 +113,7 @@ function GetFloors(floorId) {
         type: 'POST',
         data: { "id": parseInt($("button[data-id='building']").attr("title")), },
         dataType: "json",
-        url: ajaxUrl + "Cabinets/datagrid",
+        url: ajaxUrl + "Floors/datagridbyid",
         success: function (data) {
             var htmlStr = "";
             $.each(data.data, function (i, n) {
@@ -122,8 +122,8 @@ function GetFloors(floorId) {
             });
             $("#floor").html(htmlStr);
 
-            if (cabinetId != undefined && cabinetId != null) {
-                $("#floor option[title='" + data.cabinetId + "']").attr("selected", "selected");
+            if (floorId != undefined && floorId != null) {
+                $("#floor option[title='" + floorId + "']").attr("selected", "selected");
             }
             $("#floor").selectpicker("refresh");
         }
@@ -134,9 +134,9 @@ function GetFloors(floorId) {
 function InsertEngineRoom() {
     var urlTemp = "";
     if (id == undefined || id == null) {
-        urlTemp = ajaxUrl + "Equipments/add";
+        urlTemp = ajaxUrl + "EngineRooms/add";
     } else {
-        urlTemp = ajaxUrl + "Equipments/edit"
+        urlTemp = ajaxUrl + "EngineRooms/edit"
     }
     $("#errMsg").html("");
     $.ajax({
@@ -171,7 +171,7 @@ function GetEngineRoomInfo() {
             "id": id
         },
         dataType: "json",
-        url: ajaxUrl + "Equipments/getequipmentsbyid",
+        url: ajaxUrl + "EngineRooms/getengineroomsbyid",
         success: function (data) {
             data = data.data;
             $("#id").val(id);
@@ -187,8 +187,8 @@ function GetEngineRoomInfo() {
     });
 }
 
-//选择机房时，切换机柜
-$('#engineRoom').on('changed.bs.select', function (e) {
+//选择建筑时，切换楼层
+$('#building').on('changed.bs.select', function (e) {
     GetFloors();
 });
 
