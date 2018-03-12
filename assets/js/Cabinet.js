@@ -9,8 +9,8 @@
             type: 'POST',
             data: '',
             dataType: "json",
-            url: ajaxUrl + "Equipments/datagrid",
-            success: function (data) {
+            url: ajaxUrl + "Cabinets/alldatagrid",
+            success: function (data) { 
                 $.each(data.data, function (i, n) {
                     var aiNew = oTable02.fnAddData([n.id, n.name, n.buildingName, n.floorName,n.engineName,
                         '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
@@ -30,7 +30,7 @@
             type: 'POST',
             data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: ajaxUrl + "Equipments/delete",
+            url: ajaxUrl + "Cabinets/delete",
             success: function (data) {
                 if (data.success) {
                     oTable02.fnDeleteRow(nRow);

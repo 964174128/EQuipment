@@ -106,13 +106,13 @@ function GetBuildings() {
 }
 
 //获取楼层列表
-function GetFloors(floorId) {
+function GetFloors(floorId, engineId) {
     $("#floor").html("");
     $.ajax({
         type: 'POST',
         data: { "id": parseInt($("button[data-id='building']").attr("title")), },
         dataType: "json",
-        url: ajaxUrl + "Cabinets/datagrid",
+        url: ajaxUrl + "Floors/datagridbyid",
         success: function (data) {
             var htmlStr = "";
             $.each(data.data, function (i, n) {
@@ -128,26 +128,28 @@ function GetFloors(floorId) {
                 return;
             }
             $("#floor").selectpicker("refresh");
+            GetEngineRooms();
+            
         }
     });
 }
 
 //获取机房列表
 function GetEngineRooms(engineId) {
-    $("#engineRoom").html("");
+    $("#engineRoom").html(""); 
+
     $.ajax({
         type: 'POST',
         data: { "id": parseInt($("button[data-id='floor']").attr("title")), },
         dataType: "json",
-        url: ajaxUrl + "Cabinets/datagrid",
+        url: ajaxUrl + "Cabinets/datagridbyid",
         success: function (data) {
             var htmlStr = "";
             $.each(data.data, function (i, n) {
                 var option = '<option title="' + n.id + '">' + n.name + '</option>';
                 htmlStr += option;
             });
-            $("#engineRoom").html(htmlStr);
-
+            $("#engineRoom").html(htmlStr); 
             if (engineId != undefined && engineId != null) {
                 $("#engineRoom option[title='" + data.engineRoomId + "']").attr("selected", "selected");
             }
@@ -160,11 +162,11 @@ function GetEngineRooms(engineId) {
 function InsertCabinet() {
     var urlTemp = "";
     if (id == undefined || id == null) {
-        urlTemp = ajaxUrl + "Equipments/add";
+        urlTemp = ajaxUrl + "Cabinets/add";
     } else {
-        urlTemp = ajaxUrl + "Equipments/edit"
+        urlTemp = ajaxUrl + "Cabinets/edit"
     }
-    $("#errMsg").html("");
+    $("#errMsg").html(""); 
     $.ajax({
         type: 'POST',
         data: {
@@ -197,7 +199,7 @@ function GetCabinetInfo() {
             "id": id
         },
         dataType: "json",
-        url: ajaxUrl + "Equipments/getequipmentsbyid",
+        url: ajaxUrl + "Cabinets/getonebyid",
         success: function (data) {
             data = data.data;
             $("#id").val(id);
@@ -205,7 +207,7 @@ function GetCabinetInfo() {
             $("#name").val(data.name);
             $("#building option[title='" + data.buidingId + "']").attr("selected", "selected");
             $("#building").selectpicker("refresh");
-            GetFloors(data.floorId);
+            GetFloors(data.floorId, data.engineRoomId);
         },
         error: function (data) {
             alert("获取机柜信息失败，请检查网络连接！");

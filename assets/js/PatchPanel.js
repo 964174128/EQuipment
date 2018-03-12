@@ -9,7 +9,7 @@
             type: 'POST',
             data: '',
             dataType: "json",
-            url: ajaxUrl + "Equipments/datagrid",
+            url: ajaxUrl + "PatchPanels/datagrid",
             success: function (data) {
                 $.each(data.data, function (i, n) {
                     var aiNew = oTable02.fnAddData([n.id, n.name, n.portId, n.portName, n.portType, n.portConnect, n.engineRoom, n.cabinet,
@@ -30,7 +30,7 @@
             type: 'POST',
             data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: ajaxUrl + "Equipments/delete",
+            url: ajaxUrl + "PatchPanels/delete",
             success: function (data) {
                 if (data.success) {
                     oTable02.fnDeleteRow(nRow);

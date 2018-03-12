@@ -148,9 +148,9 @@ function GetCabinets(cabinetId) {
 function InsertPatchPanel() {
     var urlTemp = "";
     if (id == undefined || id == null) {
-        urlTemp = ajaxUrl + "Equipments/add";
+        urlTemp = ajaxUrl + "PatchPanels/add";
     } else {
-        urlTemp = ajaxUrl + "Equipments/edit"
+        urlTemp = ajaxUrl + "PatchPanels/edit"
     }
     $("#errMsg").html("");
     $.ajax({
@@ -187,7 +187,7 @@ function GetPatchPanelInfo() {
             "id": id
         },
         dataType: "json",
-        url: ajaxUrl + "Equipments/getequipmentsbyid",
+        url: ajaxUrl + "PatchPanels/getonebyid",
         success: function (data) {
             data = data.data;
             $("#id").val(id);
