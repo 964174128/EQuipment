@@ -139,14 +139,18 @@ function GetEngineRooms() {
             });
             $("#engineRoom").html(htmlStr); 
             $("#engineRoom").selectpicker("refresh");
+            if (id != undefined) {
+                GetEquipmentInfo();
+                return;
+            }
             GetCabinets();
         } 
     });
 }
 
 //获取机柜列表
-function GetCabinets() { 
-    $("#cabinet").html("");
+function GetCabinets(cabinetId) { 
+    $("#cabinet").html(""); 
     $.ajax({
         type: 'POST',
         data: { "id": parseInt($("button[data-id='engineRoom']").attr("title")), },
@@ -159,11 +163,11 @@ function GetCabinets() {
                 htmlStr+=option;
             });
             $("#cabinet").html(htmlStr);
-            $("#cabinet").selectpicker("refresh");
-
-            if (id != undefined) {
-                GetEquipmentInfo();
+            
+            if (cabinetId != undefined && cabinetId != null) { 
+                $("#cabinet option[title='" + data.cabinetId + "']").attr("selected", "selected"); 
             }
+            $("#cabinet").selectpicker("refresh");
         }
     });
 }
@@ -221,8 +225,9 @@ function GetEquipmentInfo() {
             $("#portName").val(data.portName); 
             $("#portType").val(data.portType);
             $("#portConnect").val(data.portConnect);
-            $("#engineRoom option[title='"+data.engineRoomId+"']").attr("selected",true);
-            $("#cabinetId option[title='"+data.cabinetId+"']").attr("selected",true); 
+            $("#engineRoom option[title='" + data.engineRoomId + "']").attr("selected", "selected");
+            $("#engineRoom").selectpicker("refresh");
+            GetCabinets(data.cabinetId); 
         },
         error: function (data) {
             alert("获取设备信息失败，请检查网络连接！");

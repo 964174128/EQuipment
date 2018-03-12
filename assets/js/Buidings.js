@@ -4,12 +4,12 @@
 
     //获取数据
     function GetData() {
-        oTable02.fnClearTable();
+        oTable02.fnClearTable(); 
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             data: '',
             dataType: "json",
-            url: ajaxUrl + "user/datagrid",
+            url: ajaxUrl + "Buildings/datagrid",
             success: function (data) {
                 $.each(data.data, function (i, n) {
                     var aiNew = oTable02.fnAddData([n.id, n.name, '<a class="edit" href="">修改 </a><a class="delete" href=""> 删除</a>']);
@@ -18,6 +18,7 @@
                 });
             },
             error: function (data) {
+                alert("shib");
                 ShowError(data.error);
             }
         });
@@ -26,15 +27,15 @@
     function ModifyData(oTable02, nRow, isAdd) {
         var thisUrl;
         if (isAdd) {
-            thisUrl = ajaxUrl + "user/addUser";
+            thisUrl = ajaxUrl + "Buildings/add";
         } else {
-            thisUrl = ajaxUrl + "user/editUser";
+            thisUrl = ajaxUrl + "Buildings/edit";
         }
         var jqInputs = $('input', nRow);
         var aData = oTable02.fnGetData(nRow);
         $.ajax({
             type: 'POST',
-            data: { "id": parseInt(jqInputs[0].value), "username": jqInputs[1].value, "gender": jqInputs[2].value },
+            data: { "id": parseInt(jqInputs[0].value), "name": jqInputs[1].value },
             dataType: "json",
             url: thisUrl,
             success: function (data) {
@@ -56,7 +57,7 @@
             type: 'POST',
             data: { "id": parseInt(aData[0]) },
             dataType: "json",
-            url: ajaxUrl + "user/deleteUser",
+            url: ajaxUrl + "Buildings/delete",
             success: function (data) {
                 if (data.success) {
                     oTable02.fnDeleteRow(nRow);
@@ -91,12 +92,11 @@
         var aData = oTable02.fnGetData(nRow);
         var jqTds = $('>td', nRow);
         jqTds[0].innerHTML = '<input class="form-control" type="text" value="' + aData[0] + '">';
-        jqTds[1].innerHTML = '<input class="form-control" type="text" value="' + aData[1] + '">';
-        jqTds[2].innerHTML = '<input class="form-control" type="text" value="' + aData[2] + '">';
+        jqTds[1].innerHTML = '<input class="form-control" type="text" value="' + aData[1] + '">'; 
         if (isAdd) {
-            jqTds[3].innerHTML = '<a class="add save" href="#">保存 </a><a class="delete" href="#"> 删除</a>';
+            jqTds[2].innerHTML = '<a class="add save" href="#">保存 </a><a class="delete" href="#"> 删除</a>';
         } else {
-            jqTds[3].innerHTML = '<a class="edit save" href="#">保存 </a><a class="delete" href="#"> 删除</a>';
+            jqTds[2].innerHTML = '<a class="edit save" href="#">保存 </a><a class="delete" href="#"> 删除</a>';
         }
     };
 
@@ -104,9 +104,8 @@
     function saveRow(oTable02, nRow) {
         var jqInputs = $('input', nRow);
         oTable02.fnUpdate(jqInputs[0].value, nRow, 0, false);
-        oTable02.fnUpdate(jqInputs[1].value, nRow, 1, false);
-        oTable02.fnUpdate(jqInputs[2].value, nRow, 2, false);
-        oTable02.fnUpdate('<a class="edit" href="#">修改 </a><a class="delete" href="#"> 删除</a>', nRow, 3, false);
+        oTable02.fnUpdate(jqInputs[1].value, nRow, 1, false); 
+        oTable02.fnUpdate('<a class="edit" href="#">修改 </a><a class="delete" href="#"> 删除</a>', nRow, 2, false);
         oTable02.fnDraw();
         nEditing = null;
     };
