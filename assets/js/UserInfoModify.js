@@ -55,7 +55,7 @@ function GetUserInfo() {
         type: 'POST',
         data: "",
         dataType: "json",
-        url: ajaxUrl + "Buildings/datagrid",
+        url: ajaxUrl + "user/getUser",
         success: function (data) {
             $("#id").val(data.id); 
             $("#name").val(data.name);
@@ -72,7 +72,7 @@ function SaveUserInfo() {
             "id": parseInt($("#id").val()), "name": $("#name").val(), "password": $("#password").val(),
         },
         dataType: "json",
-        url: ajaxUrl + "Buildings/datagrid",
+        url: ajaxUrl + "user/editUser",
         success: function (data) {
             if (data.success == true || data.success == "true") {
                 $(':input', '#mainForm')
